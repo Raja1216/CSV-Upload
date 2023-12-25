@@ -1,12 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
-const csvParser = require('csv-parser');
+const path = require('path');
 
 const app = express();
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost/csvUploader', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://127.0.0.1:27017/csvUploader', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Set up multer for file uploads
 const storage = multer.memoryStorage();
@@ -14,6 +14,7 @@ const upload = multer({ storage: storage });
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Import routes
 const indexRoutes = require('./routes/index');
@@ -31,7 +32,7 @@ app.get('/file/:filename', async (req, res) => {
       return res.status(404).send('File not found');
     }
 
-    res.render('index', { files: [], selectedFile });
+    res.render('dataTable', { files: [], selectedFile });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');

@@ -1,72 +1,35 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/styles/style.css">
-  <title>CSV Uploader</title>
-</head>
-<body>
-  <h1>CSV Uploader</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/style.css" />
+    <title>CSV Uploader</title>
+  </head>
+  <body>
+    <h1>-: CSV Uploader :-</h1>
 
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="csvFile" accept=".csv" required>
-    <button type="submit">Upload</button>
-  </form>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <label>
+        <span
+          ><p style="padding: 6px">Select Your File</p>
+          <img src="/images/upload.png" alt="" srcset=""
+        /></span>
+        <input type="file" name="csvFile" accept=".csv" required />
+      </label>
+      <button type="submit">Upload</button>
+    </form>
 
-  <h2>Uploaded Files</h2>
-  <ul>
-    <% files.forEach(file => { %>
+    <h2>Uploaded Files</h2>
+    <% if(files.length <= 0) { %>
+    <p>No Uploaded File</p>
+    <% } %>
+    <ul>
+      <% files.forEach(file => { %>
       <li>
         <a href="/file/<%= file.filename %>"><%= file.filename %></a>
       </li>
-    <% }); %>
-  </ul>
-<!-- Replace the previous if block with this -->
-<% if (selectedFile) { %>
-  <h2>Data from <%= selectedFile.filename %></h2>
-  <!-- Table to display CSV data -->
-  <table>
-    <thead>
-      <tr>
-        <% selectedFile.data[0].forEach(header => { %>
-          <th><%= header %></th>
-        <% }); %>
-      </tr>
-    </thead>
-    <tbody>
-      <% selectedFile.data.slice(1).forEach(row => { %>
-        <tr>
-          <% row.forEach(cell => { %>
-            <td><%= cell %></td>
-          <% }); %>
-        </tr>
       <% }); %>
-    </tbody>
-  </table>
-
-  <!-- Search box -->
-  <label for="search">Search:</label>
-  <input type="text" id="search" oninput="searchTable()" placeholder="Search...">
-
-  <script>
-    function searchTable() {
-      const input = document.getElementById('search');
-      const filter = input.value.toUpperCase();
-      const table = document.querySelector('table');
-      const rows = table.querySelectorAll('tbody tr');
-
-      rows.forEach(row => {
-        const cells = Array.from(row.children);
-        const match = cells.some(cell => cell.textContent.toUpperCase().includes(filter));
-        row.style.display = match ? '' : 'none';
-      });
-    }
-  </script>
-<% } else { %>
-  <h2>No file selected</h2>
-<% } %>
-
-</body>
+    </ul>
+  </body>
 </html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Include Bootstrap CSS and DataTables CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/styles/style.css" />
+    <title>CSV Uploader</title>
+  </head>
+  <body>
+    <% if (selectedFile) { %>
+    <h2>Data from <%= selectedFile.filename %></h2>
+
+    <!-- Search box -->
+    <label for="search">Search:</label>
+    <input
+      type="text"
+      id="search"
+      oninput="searchTable()"
+      placeholder="Search..."
+    />
+    <!-- Table to display CSV data -->
+    <table>
+      <thead>
+        <tr>
+          <th>SL.No</th>
+          <% selectedFile.data[0].forEach(header => { %>
+          <th><%= header %></th>
+          <% }); %>
+        </tr>
+      </thead>
+      <tbody>
+        <% selectedFile.data.slice(1).forEach((row,i) => { %>
+        <tr>
+          <td><%= i+1 %></td>
+          <% row.forEach(cell => { %>
+          <td><%= cell %></td>
+          <% }); %>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    <!-- Include jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        $("#dataTable").DataTable({
+            paging: true,
+        });
+      });
+    </script>
+    <script>
+      function searchTable() {
+        const input = document.getElementById("search");
+        const filter = input.value.toUpperCase();
+        const table = document.querySelector("table");
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach((row) => {
+          const cells = Array.from(row.children);
+          const match = cells.some((cell) =>
+            cell.textContent.toUpperCase().includes(filter)
+          );
+          row.style.display = match ? "" : "none";
+        });
+      }
+    </script>
+    <% } else { %>
+    <h2>No file selected</h2>
+    <% } %>
+  </body>
+</html>
